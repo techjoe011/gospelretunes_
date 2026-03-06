@@ -16,6 +16,7 @@ export default function SongList({ songs, isPremium = false }: SongListProps) {
   const { currentSong, isPlaying, setCurrentSong, setIsPlaying } = useAudioStore();
   const { user } = useUser();
   const [libraryIds, setLibraryIds] = useState<string[]>([]);
+  const [isToggling, setIsToggling] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -56,7 +57,10 @@ export default function SongList({ songs, isPremium = false }: SongListProps) {
       return;
     }
 
+    if (isToggling === songId) return;
+
     try {
+      setIsToggling(songId);
       if (libraryIds.includes(songId)) {
         // Optimistic update
         setLibraryIds(prev => prev.filter(id => id !== songId));
@@ -79,7 +83,7 @@ export default function SongList({ songs, isPremium = false }: SongListProps) {
         
         const { error } = await supabase
           .from('user_library')
-          .insert({ user_id: user.id, song_id: songId });
+          .upsert({ user_id: user.id, song_id: songId }, { onConflict: 'user_id,song_id' });
         
         if (error) {
           console.error('Error adding to library:', error.message);
@@ -95,6 +99,8 @@ export default function SongList({ songs, isPremium = false }: SongListProps) {
       }
     } catch (err) {
       console.error('Unexpected error toggling library:', err);
+    } finally {
+      setIsToggling(null);
     }
   };
 
@@ -197,10 +203,11 @@ export default function SongList({ songs, isPremium = false }: SongListProps) {
               {user && (
                 <button 
                   onClick={(e) => toggleLibrary(e, song.id)}
-                  className={`p-2 hover:bg-white/10 rounded-full transition-colors ${isInLibrary ? 'text-[#d4a017]' : 'text-zinc-500 hover:text-white'}`}
+                  disabled={isToggling === song.id}
+                  className={`p-2 hover:bg-white/10 rounded-full transition-colors ${isInLibrary ? 'text-[#d4a017]' : 'text-zinc-500 hover:text-white'} ${isToggling === song.id ? 'opacity-50 cursor-not-allowed' : ''}`}
                   title={isInLibrary ? "Remove from Library" : "Add to Library"}
                 >
-                  <Heart className={`h-4 w-4 ${isInLibrary ? 'fill-current' : ''}`} />
+                  <Heart className={`h-4 w-4 ${isInLibrary ? 'fill-current' : ''} ${isToggling === song.id ? 'animate-pulse' : ''}`} />
                 </button>
               )}
               {isPremium && (
