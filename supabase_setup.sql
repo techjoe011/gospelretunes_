@@ -11,7 +11,9 @@ CREATE TABLE IF NOT EXISTS public.user_library (
 ALTER TABLE public.user_library ENABLE ROW LEVEL SECURITY;
 
 -- Simple policies for user_library (Allows users to manage their own library)
+DROP POLICY IF EXISTS "Allow users to read their own library" ON public.user_library;
 CREATE POLICY "Allow users to read their own library" ON public.user_library FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Allow users to manage their own library" ON public.user_library;
 CREATE POLICY "Allow users to manage their own library" ON public.user_library FOR ALL USING (true);
 
 -- Create a table for artists
@@ -39,11 +41,15 @@ ALTER TABLE public.artists ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.songs ENABLE ROW LEVEL SECURITY;
 
 -- Public read access for artists and songs
+DROP POLICY IF EXISTS "Allow public read access for artists" ON public.artists;
 CREATE POLICY "Allow public read access for artists" ON public.artists FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Allow public read access for songs" ON public.songs;
 CREATE POLICY "Allow public read access for songs" ON public.songs FOR SELECT USING (true);
 
 -- Admin management (Currently permissive for demo purposes; restrict to specific user IDs in production)
+DROP POLICY IF EXISTS "Allow admin management for artists" ON public.artists;
 CREATE POLICY "Allow admin management for artists" ON public.artists FOR ALL USING (true);
+DROP POLICY IF EXISTS "Allow admin management for songs" ON public.songs;
 CREATE POLICY "Allow admin management for songs" ON public.songs FOR ALL USING (true);
 
 -- Storage buckets setup (Note: Run these commands or create buckets in Supabase Dashboard)
