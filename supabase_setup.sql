@@ -1,0 +1,53 @@
+-- Create the user_library table
+CREATE TABLE IF NOT EXISTS public.user_library (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id TEXT NOT NULL, -- Clerk User ID
+    song_id TEXT NOT NULL, -- Song ID
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    UNIQUE(user_id, song_id)
+);
+
+-- Enable Row Level Security (RLS)
+ALTER TABLE public.user_library ENABLE ROW LEVEL SECURITY;
+
+-- Simple policies for user_library (Allows users to manage their own library)
+CREATE POLICY "Allow users to read their own library" ON public.user_library FOR SELECT USING (true);
+CREATE POLICY "Allow users to manage their own library" ON public.user_library FOR ALL USING (true);
+
+-- Create a table for artists
+CREATE TABLE IF NOT EXISTS public.artists (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    category TEXT NOT NULL,
+    bio TEXT,
+    image_url TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Create a table for songs
+CREATE TABLE IF NOT EXISTS public.songs (
+    id TEXT PRIMARY KEY,
+    artist_id TEXT REFERENCES public.artists(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    url TEXT NOT NULL,
+    duration TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS for new tables
+ALTER TABLE public.artists ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.songs ENABLE ROW LEVEL SECURITY;
+
+-- Public read access for artists and songs
+CREATE POLICY "Allow public read access for artists" ON public.artists FOR SELECT USING (true);
+CREATE POLICY "Allow public read access for songs" ON public.songs FOR SELECT USING (true);
+
+-- Admin management (Currently permissive for demo purposes; restrict to specific user IDs in production)
+CREATE POLICY "Allow admin management for artists" ON public.artists FOR ALL USING (true);
+CREATE POLICY "Allow admin management for songs" ON public.songs FOR ALL USING (true);
+
+-- Storage buckets setup (Note: Run these commands or create buckets in Supabase Dashboard)
+-- Instructions:
+-- 1. Go to Supabase Dashboard -> Storage
+-- 2. Create a new bucket named 'music' (Make it Public)
+-- 3. Create a new bucket named 'artists' (Make it Public)
