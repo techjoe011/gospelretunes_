@@ -41,7 +41,12 @@ export default function LibraryPage() {
         .eq('user_id', user?.id);
 
       if (error) {
-        console.error('Full Supabase error fetching library songs:', error);
+        // Detailed error logging for easier debugging
+        console.error('Full Supabase error fetching library songs:', JSON.stringify(error, null, 2));
+        console.error('Error Code:', error.code);
+        console.error('Error Message:', error.message);
+        console.error('Error Details:', error.details);
+        console.error('Error Hint:', error.hint);
         
         // 42P01 is "relation does not exist" - the table is actually missing
         // 42501 is "insufficient_privilege" - RLS is blocking access
@@ -50,12 +55,12 @@ export default function LibraryPage() {
           setTableMissing(true);
         } else if (error.code === '42501') {
           console.error('Access Denied: Row Level Security is blocking the request.');
-          alert(`Access Denied: Row Level Security is blocking the request. Please run the GRANT ALL commands and check RLS policies in your Supabase dashboard.\n\nError: ${error.message}`);
+          alert(`Access Denied: Row Level Security is blocking the request. Please run the GRANT ALL commands and check RLS policies in your Supabase dashboard.\n\nError: ${error.message}\nCode: ${error.code}\nDetails: ${error.details}`);
         } else {
           // For other errors, we don't necessarily want to show the "Setup Required" screen
           // but we still want to log it
           console.error('Error fetching library songs:', error.message);
-          alert(`Supabase Error (${error.code}): ${error.message}`);
+          alert(`Supabase Error (${error.code}): ${error.message}\nDetails: ${error.details}\nHint: ${error.hint}`);
         }
         setLoading(false);
         return;
