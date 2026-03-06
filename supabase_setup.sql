@@ -1,3 +1,5 @@
+-- DROP TABLE IF EXISTS public.user_library; -- Uncomment this line to start fresh
+
 -- Create the user_library table
 CREATE TABLE IF NOT EXISTS public.user_library (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,

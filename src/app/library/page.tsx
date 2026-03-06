@@ -50,11 +50,12 @@ export default function LibraryPage() {
           setTableMissing(true);
         } else if (error.code === '42501') {
           console.error('Access Denied: Row Level Security is blocking the request.');
-          alert("Access Denied: Please check your Supabase Row Level Security (RLS) policies for the 'user_library' table.");
+          alert(`Access Denied: Row Level Security is blocking the request. Please run the GRANT ALL commands and check RLS policies in your Supabase dashboard.\n\nError: ${error.message}`);
         } else {
           // For other errors, we don't necessarily want to show the "Setup Required" screen
           // but we still want to log it
           console.error('Error fetching library songs:', error.message);
+          alert(`Supabase Error (${error.code}): ${error.message}`);
         }
         setLoading(false);
         return;
