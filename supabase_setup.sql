@@ -7,10 +7,17 @@ CREATE TABLE IF NOT EXISTS public.user_library (
     UNIQUE(user_id, song_id)
 );
 
+-- Ensure correct ownership/permissions
+GRANT ALL ON TABLE public.user_library TO postgres;
+GRANT ALL ON TABLE public.user_library TO anon;
+GRANT ALL ON TABLE public.user_library TO authenticated;
+GRANT ALL ON TABLE public.user_library TO service_role;
+
 -- Enable Row Level Security (RLS)
 ALTER TABLE public.user_library ENABLE ROW LEVEL SECURITY;
 
 -- Simple policies for user_library (Allows users to manage their own library)
+-- Note: We use 'true' for simplicity in demo, but usually you'd check auth.uid()
 DROP POLICY IF EXISTS "Allow users to read their own library" ON public.user_library;
 CREATE POLICY "Allow users to read their own library" ON public.user_library FOR SELECT USING (true);
 DROP POLICY IF EXISTS "Allow users to manage their own library" ON public.user_library;

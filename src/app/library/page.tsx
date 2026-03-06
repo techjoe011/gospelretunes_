@@ -42,10 +42,15 @@ export default function LibraryPage() {
 
       if (error) {
         console.error('Full Supabase error fetching library songs:', error);
+        
         // 42P01 is "relation does not exist" - the table is actually missing
+        // 42501 is "insufficient_privilege" - RLS is blocking access
         if (error.code === '42P01' || error.message.toLowerCase().includes('not find') || error.message.toLowerCase().includes('not found')) {
           console.warn('Library table not yet created in Supabase. Please run the setup SQL.');
           setTableMissing(true);
+        } else if (error.code === '42501') {
+          console.error('Access Denied: Row Level Security is blocking the request.');
+          alert("Access Denied: Please check your Supabase Row Level Security (RLS) policies for the 'user_library' table.");
         } else {
           // For other errors, we don't necessarily want to show the "Setup Required" screen
           // but we still want to log it
