@@ -1,23 +1,29 @@
--- Dummy Data for Zambian Gospel Artists and Songs
+-- Updated Dummy Data from Zambianplay.com
 
 -- Artists
 INSERT INTO public.artists (id, name, category, bio, image_url)
 VALUES
-('pompi', 'Pompi', 'Gospel', 'Lotta House Records flagship artist, known for his unique fusion of African rhythms and modern gospel.', 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=1000&auto=format&fit=crop'),
-('mag44', 'Mag44', 'Gospel Hip Hop', 'Producer and artist extraordinaire, a pioneer in the Zambian gospel hip hop scene.', 'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=1000&auto=format&fit=crop'),
-('esther-chungu', 'Esther Chungu', 'Gospel', 'Award winning songstress with a powerful voice and soul-stirring worship songs.', 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1000&auto=format&fit=crop'),
-('abel-chungu', 'Abel Chungu', 'Gospel', 'Renowned worship leader and singer-songwriter known for hits like "Ichitemwiko".', 'https://images.unsplash.com/photo-1514525253344-f81bcd3ce919?q=80&w=1000&auto=format&fit=crop'),
-('ephraim', 'Ephraim', 'Gospel', 'The Son of Africa, a veteran in the Zambian gospel industry with many classic hits.', 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1000&auto=format&fit=crop')
-ON CONFLICT (id) DO NOTHING;
+('pompi', 'Pompi', 'Gospel', 'Acclaimed Zambian gospel artist known for his powerful wave of worship and fusion of African rhythms.', 'https://cdn.zambianplay.com/wp-content/uploads/2025/08/Pompi-Ft.-Voh-Greater.jpg'),
+('eazi-ra', 'Eazi Ra', 'Gospel', 'Rising Zambian gospel artist bringing fresh sounds and messages of mercy.', 'https://cdn.zambianplay.com/wp-content/uploads/2026/02/Eazi-Ra-Show-Me-Mercy.jpg'),
+('blessed-son', 'Blessed Son', 'Gospel', 'Rising gospel star emphasizing trust in God and valuing parents through his music.', 'https://cdn.zambianplay.com/wp-content/uploads/2026/02/Blessed-Son-Muchetekele.jpg'),
+('minister-susan', 'Minister Susan', 'Worship', 'Talented Zambian Gospel singer and worship leader providing encouragement through uplifting songs.', 'https://cdn.zambianplay.com/wp-content/uploads/2025/09/Minister-Susan-Pantawi.jpg'),
+('talent-mulenga', 'Talent Mulenga', 'Gospel', 'Emerging gospel artist and radio personality dedicated to sharing songs for the maker of all.', 'https://cdn.zambianplay.com/wp-content/uploads/2025/07/Talent-Mulenga-Kalubula-Wesonde.jpg')
+ON CONFLICT (id) DO UPDATE SET
+    name = EXCLUDED.name,
+    category = EXCLUDED.category,
+    bio = EXCLUDED.bio,
+    image_url = EXCLUDED.image_url;
 
 -- Songs
 INSERT INTO public.songs (id, artist_id, title, url, duration)
 VALUES
-('pompi-shaina', 'pompi', 'Shaina', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', '3:45'),
-('pompi-giant-killer', 'pompi', 'Giant Killer', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', '4:12'),
-('mag44-vickilele', 'mag44', 'Vickilele', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', '3:50'),
-('mag44-pwililika', 'mag44', 'Pwililika', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3', '4:05'),
-('esther-sangana', 'esther-chungu', 'Sangana', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3', '4:20'),
-('abel-ichitemwiko', 'abel-chungu', 'Ichitemwiko', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3', '5:10'),
-('ephraim-lekani-aleke', 'ephraim', 'Lekani Aleke', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3', '4:55')
-ON CONFLICT (id) DO NOTHING;
+('pompi-greater', 'pompi', 'Greater (ft. Voh)', 'https://zambianplay.com/wp-content/uploads/2025/08/Pompi-Ft.-Voh-Greater.mp3', '4:25'),
+('eazi-ra-show-me-mercy', 'eazi-ra', 'Show Me Mercy', 'https://zambianplay.com/wp-content/uploads/2026/02/Eazi-Ra-Show-Me-Mercy.mp3', '3:58'),
+('blessed-son-muchetekele', 'blessed-son', 'Muchetekele', 'https://zambianplay.com/wp-content/uploads/2026/02/Blessed-Son-Muchetekele.mp3', '4:15'),
+('minister-susan-pantawi', 'minister-susan', 'Pantawi', 'https://zambianplay.com/wp-content/uploads/2025/09/Minister-Susan-Pantawi.mp3', '5:10'),
+('talent-mulenga-kalubula-wesonde', 'talent-mulenga', 'Kalubula Wesonde', 'https://zambianplay.com/wp-content/uploads/2025/07/Talent-Mulenga-Kalubula-Wesonde.mp3', '4:40')
+ON CONFLICT (id) DO UPDATE SET
+    artist_id = EXCLUDED.artist_id,
+    title = EXCLUDED.title,
+    url = EXCLUDED.url,
+    duration = EXCLUDED.duration;
