@@ -1,3 +1,7 @@
+-- Cleanup existing dummy data (optional but recommended for a fresh start)
+DELETE FROM public.songs WHERE artist_id IN ('mag44', 'esther-chungu', 'abel-chungu', 'ephraim');
+DELETE FROM public.artists WHERE id IN ('mag44', 'esther-chungu', 'abel-chungu', 'ephraim');
+
 -- Updated Dummy Data from Zambianplay.com
 
 -- Artists
