@@ -34,7 +34,8 @@ export default function SongList({ songs, isPremium = false }: SongListProps) {
         .eq('user_id', user.id);
       
       if (error) {
-        if (error.code === 'PGRST116' || error.message.toLowerCase().includes('not find') || error.message.toLowerCase().includes('not found')) {
+        // 42P01 is "relation does not exist" - the table is actually missing
+        if (error.code === '42P01' || error.message.toLowerCase().includes('not find') || error.message.toLowerCase().includes('not found')) {
           console.warn('Library table not yet created in Supabase. Please run the setup SQL.');
         } else {
           console.error('Error fetching library:', error.message);
@@ -90,7 +91,7 @@ export default function SongList({ songs, isPremium = false }: SongListProps) {
           // Rollback
           setLibraryIds(prev => prev.filter(id => id !== songId));
           
-          if (error.code === 'PGRST116' || error.message.toLowerCase().includes('not find') || error.message.toLowerCase().includes('not found')) {
+          if (error.code === '42P01' || error.message.toLowerCase().includes('not find') || error.message.toLowerCase().includes('not found')) {
             alert("Database table 'user_library' not found. Please run the setup SQL in your Supabase dashboard.");
           } else {
             alert("Failed to add song to library. " + error.message);

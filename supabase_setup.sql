@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS public.user_library (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id TEXT NOT NULL, -- Clerk User ID
-    song_id TEXT NOT NULL, -- Song ID
+    song_id TEXT NOT NULL REFERENCES public.songs(id) ON DELETE CASCADE, -- Song ID
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     UNIQUE(user_id, song_id)
 );

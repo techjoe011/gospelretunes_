@@ -41,10 +41,14 @@ export default function LibraryPage() {
         .eq('user_id', user?.id);
 
       if (error) {
-        if (error.code === 'PGRST116' || error.message.toLowerCase().includes('not find') || error.message.toLowerCase().includes('not found')) {
+        console.error('Full Supabase error fetching library songs:', error);
+        // 42P01 is "relation does not exist" - the table is actually missing
+        if (error.code === '42P01' || error.message.toLowerCase().includes('not find') || error.message.toLowerCase().includes('not found')) {
           console.warn('Library table not yet created in Supabase. Please run the setup SQL.');
           setTableMissing(true);
         } else {
+          // For other errors, we don't necessarily want to show the "Setup Required" screen
+          // but we still want to log it
           console.error('Error fetching library songs:', error.message);
         }
         setLoading(false);
