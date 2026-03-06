@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import { useUser } from '@clerk/nextjs';
-import { ARTISTS, Song } from '@/lib/data';
+import { Song } from '@/lib/data';
 import SongList from '@/components/SongList';
 
 export default function LibraryPage() {
@@ -25,7 +25,19 @@ export default function LibraryPage() {
     try {
       const { data, error } = await supabase
         .from('user_library')
-        .select('song_id')
+        .select(`
+          song_id,
+          songs:song_id (
+            id,
+            title,
+            url,
+            duration,
+            artist_id,
+            artists:artist_id (
+              name
+            )
+          )
+        `)
         .eq('user_id', user?.id);
 
       if (error) {
@@ -40,9 +52,11 @@ export default function LibraryPage() {
       }
 
       if (data) {
-        const savedSongIds = data.map(item => item.song_id);
-        const allSongs = ARTISTS.flatMap(artist => artist.songs);
-        const librarySongs = allSongs.filter(song => savedSongIds.includes(song.id));
+        // Flatten the nested data and ensure we only have valid songs
+        const librarySongs = data
+          .map(item => item.songs)
+          .filter(song => song !== null) as any[];
+        
         setSongs(librarySongs);
         setTableMissing(false);
       }

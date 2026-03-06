@@ -191,6 +191,9 @@ export default function SongList({ songs, isPremium = false }: SongListProps) {
                 <span className={`font-medium truncate ${isSelected ? 'text-[#d4a017]' : 'text-[#f5e6d3]'}`}>
                   {song.title}
                 </span>
+                <span className="text-xs text-zinc-500 truncate">
+                  {(song as any).artists?.name || ''}
+                </span>
                 <span className="text-xs text-zinc-500 md:hidden">{song.duration}</span>
               </div>
             </div>
